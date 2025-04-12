@@ -270,6 +270,21 @@ export function getChainByChainId(chainId: number): ChainConfig | undefined {
   return chains.find(chain => chain.chainId === chainId);
 }
 
-export function getChainByName(name: string): ChainConfig | undefined {
-  return chains.find(chain => chain.name.toLowerCase() === name.toLowerCase());
+/**
+ * Get chain configuration by chain name or ID
+ * @param chainIdentifier The name or ID of the chain to get configuration for
+ * @returns ChainConfig | undefined
+ */
+export function getChainConfig(chainIdentifier: string): ChainConfig | undefined {
+  // Try to parse as chain ID first
+  const chainId = parseInt(chainIdentifier, 10);
+  if (!isNaN(chainId)) {
+    return chains.find(chain => chain.chainId === chainId);
+  }
+  
+  // If not a valid number, try matching by name
+  return chains.find(chain => 
+    chain.name.toLowerCase() === chainIdentifier.toLowerCase() ||
+    chain.name.toLowerCase().replace(/\s+/g, '') === chainIdentifier.toLowerCase()
+  );
 } 
