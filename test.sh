@@ -18,9 +18,17 @@ fi
 # Set log level for tests
 export LOG_LEVEL=DEBUG
 
+# Create a test directory for output files
+TEST_DIR="test_output"
+mkdir -p $TEST_DIR
+
 # Test with a known contract address
 echo "Testing with a known contract address..."
 ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+
+# Check if ABI file was created
+echo -e "\nChecking for ABI file..."
+ls -la *.json 2>/dev/null || echo "No ABI file found"
 
 # Test with invalid address
 echo -e "\nTesting with invalid address..."

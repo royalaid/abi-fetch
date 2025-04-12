@@ -34,7 +34,7 @@ You need to set your API key as an environment variable. You can get API keys fr
 
 Set your API key:
 ```bash
-export API_KEY=your_api_key
+export ETHERSCAN_API_KEY=your_api_key
 ```
 
 ### Running the application
@@ -45,7 +45,9 @@ Fetch an ABI by providing just the contract address. The tool will automatically
 bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
 ```
 
-The tool will search across all supported chains and display the contract name and ABI for each instance found.
+The tool will search across all supported chains and display the contract name and ABI for each instance found. If the contract is found on multiple chains, you'll be prompted to choose which chain to save the ABI from.
+
+The ABI will be automatically saved to a JSON file named after the contract (or the address if the contract name is not available).
 
 ### Logging
 
