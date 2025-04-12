@@ -1,3 +1,5 @@
+Before we start, a warning. This is was vibecoded in like 30 minutes. It probably doesn't work for every chain. I will make fixes as I encounter bugs. Its still useful IMO so do with it what you will.
+
 # ABI Fetch
 
 A simple CLI tool to fetch contract ABIs from various blockchain explorers.
@@ -6,6 +8,7 @@ A simple CLI tool to fetch contract ABIs from various blockchain explorers.
 
 - Support for multiple EVM-compatible networks
 - Fetch contract ABIs by address
+- Automatic contract name extraction
 - Simple command-line interface
 
 ## Installation
@@ -23,18 +26,27 @@ bun install
 
 ## Usage
 
-### Setting up your API key
+### Setting up your API keys
 
-You need to set your API key as an environment variable. You can get API keys from the respective block explorers:
+You need to set your API keys as environment variables. You can get API keys from the respective block explorers:
 
 - [Etherscan](https://etherscan.io/apis)
 - [BscScan](https://bscscan.com/apis)
 - [PolygonScan](https://polygonscan.com/apis)
+- [BaseScan](https://basescan.org/apis)
 - And others...
 
-Set your API key:
+Set your API keys in the `.env` file:
+```
+ETHERSCAN_API_KEY=your_api_key
+# Optional: Use a separate API key for Base chain
+BASESCAN_API_KEY=your_basescan_api_key
+```
+
+Or set them directly in your shell:
 ```bash
 export ETHERSCAN_API_KEY=your_api_key
+export BASESCAN_API_KEY=your_basescan_api_key  # Optional
 ```
 
 ### Running the application
@@ -45,7 +57,7 @@ Fetch an ABI by providing just the contract address. The tool will automatically
 bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
 ```
 
-The tool will search across all supported chains and display the contract name and ABI for each instance found. If the contract is found on multiple chains, you'll be prompted to choose which chain to save the ABI from.
+The tool will search across all supported chains and display the contract name for each instance found. If the contract is found on multiple chains, you'll be prompted to choose which chain to save the ABI from.
 
 The ABI will be automatically saved to a JSON file named after the contract (or the address if the contract name is not available).
 
@@ -70,7 +82,16 @@ Available log levels:
 
 ### Available Networks
 
-The tool supports many EVM-compatible networks. Run the application without arguments to see a list of available networks:
+The tool supports many EVM-compatible networks, including:
+- Ethereum Mainnet
+- Base
+- Optimism
+- Arbitrum
+- Polygon
+- BNB Smart Chain
+- And many more testnets
+
+Run the application without arguments to see a list of available networks:
 
 ```bash
 bun run src/index.ts
