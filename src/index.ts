@@ -90,7 +90,6 @@ async function fetchABIForChain(chain: ChainConfig): Promise<ChainResult> {
     // Use Base-specific API key for Base chain
     const apiKey = chain.name === "Base" ? BASESCAN_API_KEY : ETHERSCAN_API_KEY;
     const url = `${chain.apiUrl}/api?module=contract&action=getabi&address=${address}&apikey=${apiKey}`;
-    logger.debug(`Making API request to: ${url}`);
 
     const response = await fetch(url);
     const data = (await response.json()) as EtherscanResponse;
@@ -114,12 +113,6 @@ async function fetchABIForChain(chain: ChainConfig): Promise<ChainResult> {
         error: `API Error: ${data.message} - ${data.result}`,
       };
     }
-
-    // Log successful URL
-    console.log(`\nSuccessful API call to ${chain.name}:`);
-    console.log(url);
-    console.log("Response:", data);
-    console.log("----------------------------------------\n");
 
     try {
       // Try to parse the response
@@ -205,8 +198,6 @@ async function fetchABIFromAllChains() {
     if (result.contractName) {
       logger.info(`    Contract Name: ${result.contractName}`);
     }
-    logger.info(`    ABI:`);
-    logger.info(result.abi || "");
     logger.info("-".repeat(80));
   });
 
