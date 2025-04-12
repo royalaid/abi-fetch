@@ -39,15 +39,32 @@ export API_KEY=your_api_key
 
 ### Running the application
 
-Fetch an ABI by chain ID:
+Fetch an ABI by providing just the contract address. The tool will automatically check all supported chains:
+
 ```bash
-bun run src/index.ts 1 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
 ```
 
-Or by chain name:
+The tool will search across all supported chains and display the contract name and ABI for each instance found.
+
+### Logging
+
+The application uses a configurable logging system. You can control the log level using the `LOG_LEVEL` environment variable:
+
 ```bash
-bun run src/index.ts "Ethereum Mainnet" 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+# Set log level to DEBUG for more verbose output
+LOG_LEVEL=DEBUG bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+
+# Set log level to ERROR to only show errors
+LOG_LEVEL=ERROR bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
 ```
+
+Available log levels:
+- `DEBUG`: Detailed information for debugging
+- `INFO`: General information about the application's progress
+- `WARN`: Warning messages for potentially harmful situations
+- `ERROR`: Error messages for serious problems
+- `NONE`: Disable all logging
 
 ### Available Networks
 

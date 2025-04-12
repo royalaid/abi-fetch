@@ -15,20 +15,15 @@ if [ -z "$ETHERSCAN_API_KEY" ]; then
   exit 1
 fi
 
-# Test with Ethereum Mainnet
-echo "Testing with Ethereum Mainnet..."
-ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts 1 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+# Set log level for tests
+export LOG_LEVEL=DEBUG
 
-# Test with chain name
-echo -e "\nTesting with chain name..."
-ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts "Ethereum Mainnet" 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+# Test with a known contract address
+echo "Testing with a known contract address..."
+ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
 
 # Test with invalid address
 echo -e "\nTesting with invalid address..."
-ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts 1 0xinvalid
-
-# Test with invalid chain
-echo -e "\nTesting with invalid chain..."
-ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts 999999 0xBB9bc244D798123fDe783fCc1C72d3Bb8C189413
+ETHERSCAN_API_KEY=$ETHERSCAN_API_KEY bun run src/index.ts 0xinvalid
 
 echo -e "\nAll tests completed!" 
