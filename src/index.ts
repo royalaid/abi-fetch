@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { getChainConfig, chains } from "./config/chains";
 import type { ChainConfig } from "./config/chains";
 import { validateAddress } from "./utils/validation";
@@ -16,14 +17,31 @@ if (!ETHERSCAN_API_KEY) {
   process.exit(1);
 }
 
-const args = process.argv.slice(2);
-if (args.length !== 1) {
-  logger.error("Usage: npm start <address>");
-  logger.error("Example: npm start 0x1234...");
+const rawArgs = process.argv.slice(2);
+
+// Parse --chain flag
+let chainFilter: string | undefined;
+const filteredArgs: string[] = [];
+for (let i = 0; i < rawArgs.length; i++) {
+  if (rawArgs[i] === "--chain" || rawArgs[i] === "-c") {
+    chainFilter = rawArgs[++i];
+    if (!chainFilter) {
+      logger.error("--chain requires a value (chain name or chain ID)");
+      process.exit(1);
+    }
+  } else {
+    filteredArgs.push(rawArgs[i]!);
+  }
+}
+
+if (filteredArgs.length !== 1) {
+  logger.error("Usage: abi-fetch [--chain <name|id>] <address>");
+  logger.error("Example: abi-fetch 0x1234...");
+  logger.error("Example: abi-fetch --chain base 0x1234...");
   process.exit(1);
 }
 
-const address = args[0] || "";
+const address = filteredArgs[0] || "";
 
 if (!validateAddress(address)) {
   logger.error("Invalid Ethereum address format");
@@ -177,10 +195,23 @@ async function saveABI(result: ChainResult): Promise<void> {
 }
 
 async function fetchABIFromAllChains() {
-  logger.info(`Searching for contract at address ${address} across all chains...`);
+  let chainsToSearch = chains;
+
+  if (chainFilter) {
+    const matched = getChainConfig(chainFilter);
+    if (!matched) {
+      logger.error(`Unknown chain: "${chainFilter}"`);
+      logger.error("Use a chain name (e.g. \"base\", \"arbitrum one\") or chain ID (e.g. 8453, 42161)");
+      process.exit(1);
+    }
+    chainsToSearch = [matched];
+    logger.info(`Searching for contract at address ${address} on ${matched.name}...`);
+  } else {
+    logger.info(`Searching for contract at address ${address} across all chains...`);
+  }
 
   // Create an array of promises for all chains
-  const results = await Promise.all(chains.map((chain) => fetchABIForChain(chain)));
+  const results = await Promise.all(chainsToSearch.map((chain) => fetchABIForChain(chain)));
 
   // Filter out chains with errors
   const successfulResults = results.filter((result) => !result.error);

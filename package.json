@@ -2,7 +2,9 @@
   "name": "abi-fetch",
   "module": "src/index.ts",
   "type": "module",
-  "private": true,
+  "bin": {
+    "abi-fetch": "./dist/index.js"
+  },
   "scripts": {
     "start": "bun run src/index.ts",
     "build": "bun build src/index.ts --outdir dist",
